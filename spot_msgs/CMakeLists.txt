@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   actionlib
+  actionlib_msgs
   message_generation
 )
 
@@ -42,6 +43,7 @@ add_service_files(
 add_action_files(
   FILES
   NavigateTo.action
+  Trajectory.action
 )
 
 generate_messages(
