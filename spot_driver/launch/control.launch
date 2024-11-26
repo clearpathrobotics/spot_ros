@@ -2,6 +2,7 @@
   <arg name="joy"        default="true" />
   <arg name="joy_dev"    default="$(optenv SPOT_JOY_DEVICE /dev/input/js0)" />
   <arg name="joy_config" default="$(eval optenv('SPOT_JOY_CONFIG', find('spot_driver') + '/config/teleop.yaml'))" />
+  <arg name="config_extras" default="$(eval optenv('SPOT_CONTROL_EXTRAS', find('spot_driver') + '/config/empty.yaml'))"/>
 
   <node pkg="interactive_marker_twist_server" type="marker_server" name="twist_marker_server" >
     <rosparam command="load" file="$(find spot_driver)/config/planar.yaml" />
@@ -18,4 +19,14 @@
       <node pkg="teleop_twist_joy" type="teleop_node" name="teleop_twist_joy"/>
     </group>
   </group>
+
+
+  <node pkg="twist_mux" type="twist_mux" name="twist_mux" >
+    <rosparam command="load" file="$(find spot_driver)/config/twist_mux.yaml" />
+    <remap from="cmd_vel_out" to="spot/cmd_vel"/>
+  </node>
+
+  <!-- Override the default control parameters, see config/empty.yaml for default. -->
+  <rosparam command="load" file="$(arg config_extras)" />
+
 </launch>
