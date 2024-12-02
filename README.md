@@ -18,7 +18,7 @@ pip3 install bosdyn-client bosdyn-mission bosdyn-api bosdyn-core
 
 Go to the source directory of your ROS workspace and clone this repository with
 ```bash
-git clone git@github.com:heuristicus/spot_ros.git
+git clone https://github.com/clearpathrobotics/spot_ros.git
 ```
 
 Then, initialise the submodule for the wrapper we use to interact with the Boston Dynamics SDK
