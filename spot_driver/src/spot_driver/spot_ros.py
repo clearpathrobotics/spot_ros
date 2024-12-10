@@ -2013,6 +2013,7 @@ class SpotROS:
         self.username = rospy.get_param("~username", "default_value")
         self.password = rospy.get_param("~password", "default_value")
         self.hostname = rospy.get_param("~hostname", "default_value")
+        self.port = rospy.get_param("~port", 0)
         self.motion_deadzone = rospy.get_param("~deadzone", 0.05)
         self.start_estop = rospy.get_param("~start_estop", True)
         self.estop_timeout = rospy.get_param("~estop_timeout", 9.0)
@@ -2031,6 +2032,7 @@ class SpotROS:
             username=self.username,
             password=self.password,
             hostname=self.hostname,
+            port=self.port,
             robot_name=self.robot_name,
             logger=self.logger,
             start_estop=self.start_estop,
