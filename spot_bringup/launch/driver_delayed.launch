@@ -1,0 +1,8 @@
+<launch>
+
+  <node pkg="launch_delay" type="launch_delay"
+    args="150 $(find spot_driver)/launch/driver.launch"
+    name="spot_ros_delayed" output="screen">
+  </node>
+
+</launch>

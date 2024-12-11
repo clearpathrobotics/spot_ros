@@ -17,6 +17,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>roslaunch</build_depend>
+  <run_depend>launch_delay</run_depend>
   <run_depend>robot_upstart</run_depend>
 
   <export>
