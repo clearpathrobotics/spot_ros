@@ -1,7 +1,7 @@
 ## Connection params ##
 hostname: 192.168.50.3
-username: clearpath
-password: clearpathrobotics
+username: 'clearpath'
+password: 'clearpathrobotics'
 
 ## Spot autonomy params ##
 autonomy_enabled: true
@@ -46,4 +46,4 @@ claim:
 # If true, requests depth images mapped in the vision frame for cameras on the Spot robot
 depth_in_visual: True
 # "vision" or "odom", picks the type of odometry passed from the Spot robot to the ROS package
-mode_parent_odom_tf: vision
+publish_odom_tf: false

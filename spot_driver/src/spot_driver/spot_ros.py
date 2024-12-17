@@ -159,7 +159,12 @@ class SpotROS:
             self.joint_state_pub.publish(joint_state)
 
             ## TF ##
-            tf_msg = GetTFFromState(state, self.spot_wrapper, self.mode_parent_odom_tf)
+            tf_msg = GetTFFromState(
+                state,
+                self.spot_wrapper,
+                self.mode_parent_odom_tf,
+                self.publish_odom_tf
+            )
             to_remove = []
             if len(tf_msg.transforms) > 0:
                 for transform in tf_msg.transforms:
@@ -1683,21 +1688,22 @@ class SpotROS:
         # Spot has 2 types of odometries: 'odom' and 'vision'
         # The former one is kinematic odometry and the second one is a combined odometry of vision and kinematics
         # These params enables to change which odometry frame is a parent of body frame and to change tf names of each odometry frames.
-        self.mode_parent_odom_tf = rospy.get_param(
-            "~mode_parent_odom_tf", "odom"
-        )  # 'vision' or 'odom'
-        self.tf_name_kinematic_odom = rospy.get_param("~tf_name_kinematic_odom", "odom")
-        self.tf_name_raw_kinematic = "odom"
+        self.publish_odom_tf = rospy.get_param('~publish_odom_tf', True)
+        self.tf_name_kinematic_odom = rospy.get_param('~tf_name_kinematic_odom', 'odom')
         self.tf_name_vision_odom = rospy.get_param("~tf_name_vision_odom", "vision")
-        self.tf_name_raw_vision = "vision"
-        if (
-            self.mode_parent_odom_tf != self.tf_name_raw_kinematic
-            and self.mode_parent_odom_tf != self.tf_name_raw_vision
-        ):
-            rospy.logerr(
-                "rosparam '~mode_parent_odom_tf' should be 'odom' or 'vision'."
-            )
-            return
+        if self.publish_odom_tf:
+            self.mode_parent_odom_tf = rospy.get_param("~mode_parent_odom_tf", self.tf_name_vision_odom)  # 'vision' or 'odom' by default
+            if (
+                self.mode_parent_odom_tf != self.tf_name_kinematic_odom
+                or self.mode_parent_odom_tf != self.tf_name_vision_odom
+            ):
+                rospy.logerr(
+                    f"rosparam '~mode_parent_odom_tf' should be '{self.tf_name_kinematic_odom}' or '{self.tf_name_vision_odom}'."
+                )
+                return
+        else:
+            self.mode_parent_odom_tf = 'vision'
+     
 
     def initialize_publishers(self):
         # Images #
