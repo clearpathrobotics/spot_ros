@@ -10,6 +10,7 @@ max_linear_velocity_x: 0.5  #[m/s]
 max_linear_velocity_y: 0.5  #[m/s]
 max_angular_velocity_z: 0.5 #[rad/s]
 allow_motion: true
+publish_odom_tf: false
 
 
 ## Desired Publish frequencies ##
@@ -45,5 +46,3 @@ claim:
 
 # If true, requests depth images mapped in the vision frame for cameras on the Spot robot
 depth_in_visual: True
-# "vision" or "odom", picks the type of odometry passed from the Spot robot to the ROS package
-publish_odom_tf: false
