@@ -579,7 +579,6 @@ def GetTFFromState(
         parent_frame_id = state.kinematic_state.transforms_snapshot.child_to_parent_edge_map.get(frame_name).parent_frame_name
         if parent_frame_id:
             if not publish_odom_tf and (frame_name == 'odom' or parent_frame_id == 'odom'):
-                rospy.loginfo("excluding 'odom' TF")
                 continue
 
             try:
