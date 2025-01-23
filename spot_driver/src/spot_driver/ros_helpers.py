@@ -578,7 +578,8 @@ def GetTFFromState(
     ) in state.kinematic_state.transforms_snapshot.child_to_parent_edge_map:
         parent_frame_id = state.kinematic_state.transforms_snapshot.child_to_parent_edge_map.get(frame_name).parent_frame_name
         if parent_frame_id:
-            if not publish_odom_tf and (frame_name == 'odom' or parent_frame_id == 'odom'):
+            # if not publish_odom_tf and (frame_name == 'odom' or parent_frame_id == 'odom'):
+            if not publish_odom_tf and (frame_name == 'odom' or frame_name == 'vision' or parent_frame_id == 'odom' or parent_frame_id == 'vision'):
                 continue
 
             try:
