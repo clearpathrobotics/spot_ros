@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+  <name>spot_bringup</name>
+  <version>0.0.1</version>
+  <description>Clearpath Spot installation and integration package</description>
+
+  <author email="jmastrangelo@clearpathrobotics.com">Jose Mastrangelo</author>
+
+  <maintainer email="jmastrangelo@clearpathrobotics.com">Jose Mastrangelo</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://ros.org/wiki/husky_bringup</url>
+  <url type="bugtracker">https://github.com/husky/husky_robot/issues</url>
+  <url type="repository">https://github.com/husky/husky_robot</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roslaunch</build_depend>
+  <run_depend>launch_delay</run_depend>
+  <run_depend>robot_upstart</run_depend>
+
+  <export>
+  </export>
+</package>

@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+
+import robot_upstart
+import os
+
+j = robot_upstart.Job(name="spot-ros", interface=os.environ.get('ROBOT_NETWORK'), workspace_setup=os.environ.get('ROBOT_SETUP'))
+
+# Stuff to launch on system startup.
+#j.add(package="spot_driver", glob="launch/driver.launch")
+j.add(package="spot_bringup", glob="launch/driver_delayed.launch")
+
+j.install()

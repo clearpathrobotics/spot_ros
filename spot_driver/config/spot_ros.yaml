@@ -1,3 +1,19 @@
+## Connection params ##
+hostname: 192.168.50.3
+username: 'clearpath'
+password: 'clearpathrobotics'
+
+## Spot autonomy params ##
+autonomy_enabled: true
+estop_timeout: 9.0
+max_linear_velocity_x: 0.5  #[m/s]
+max_linear_velocity_y: 0.5  #[m/s]
+max_angular_velocity_z: 0.5 #[rad/s]
+allow_motion: true
+publish_odom_tf: false
+
+
+## Desired Publish frequencies ##
 rates:
   # loop_frequency is the frequency of the loop which publishes messages
   loop_frequency: 50.0
@@ -15,20 +31,18 @@ rates:
   world_objects: 10.0
 
 # If true, automatically claim the lease when the driver starts
-auto_claim: False
+auto_claim: True
 # If true, automatically power on when the driver starts (requires auto_claim)
 auto_power_on: False
 # If true, automatically stand when the driver starts (requires auto_power_on)
 auto_stand: False
 
-# If true, requests depth images mapped in the vision frame for cameras on the Spot robot
-depth_in_visual: True
-# "vision" or "odom", picks the type of odometry passed from the Spot robot to the ROS package
-mode_parent_odom_tf: vision
-
 claim:
-  # If true, forcefully take the lease, instead of acquiring it, which can fail if someone else has it
+  # If true, forcefully take the lease, instead of acquiring it, which can fail if someone else has >
   use_take_lease: False
-  # If true, try and claim the lease when doing actions if we don't already have it. Also automatically powers on for
+  # If true, try and claim the lease when doing actions if we don't already have it. Also automatica>
   # stand, rollover and self-right commands
   get_lease_on_action: False
+
+# If true, requests depth images mapped in the vision frame for cameras on the Spot robot
+depth_in_visual: True

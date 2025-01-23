@@ -481,7 +481,7 @@ def GetOdomFromState(
         state.kinematic_state.acquisition_timestamp
     )
     odom_msg.header.stamp = rospy.Time(local_time.seconds, local_time.nanos)
-    if use_vision == True:
+    if use_vision:
         odom_msg.header.frame_id = "vision"
         tform_body = get_vision_tform_body(state.kinematic_state.transforms_snapshot)
     else:
@@ -560,6 +560,7 @@ def GetTFFromState(
     state: robot_state_pb2.RobotState,
     spot_wrapper: SpotWrapper,
     inverse_target_frame: str,
+    publish_odom_tf: bool,
 ) -> TFMessage:
     """Maps robot link state data from robot state proto to ROS TFMessage message
 
@@ -575,9 +576,12 @@ def GetTFFromState(
     for (
         frame_name
     ) in state.kinematic_state.transforms_snapshot.child_to_parent_edge_map:
-        if state.kinematic_state.transforms_snapshot.child_to_parent_edge_map.get(
-            frame_name
-        ).parent_frame_name:
+        parent_frame_id = state.kinematic_state.transforms_snapshot.child_to_parent_edge_map.get(frame_name).parent_frame_name
+        if parent_frame_id:
+            # if not publish_odom_tf and (frame_name == 'odom' or parent_frame_id == 'odom'):
+            if not publish_odom_tf and (frame_name == 'odom' or frame_name == 'vision' or parent_frame_id == 'odom' or parent_frame_id == 'vision'):
+                continue
+
             try:
                 transform = state.kinematic_state.transforms_snapshot.child_to_parent_edge_map.get(
                     frame_name

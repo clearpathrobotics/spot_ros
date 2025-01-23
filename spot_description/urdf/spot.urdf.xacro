@@ -16,8 +16,8 @@
     <link name="base_link"/>
     <joint name="base_link_joint" type="fixed">
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <parent link="body" />
-        <child link="base_link" />
+        <parent link="base_link" />
+        <child link="body" />
     </joint>
 
     <link name="front_rail"/>
@@ -279,6 +279,37 @@
 
     <!-- Standard accessories. -->
     <xacro:include filename="$(find spot_description)/urdf/accessories.urdf.xacro" />
+
+    <!-- OutdoorNav -->
+    <xacro:arg name="outdoornav_enabled"       default="$(optenv OUTDOORNAV_ENABLED 0)" />
+    <xacro:arg name="outdoornav_configuration" default="$(optenv OUTDOORNAV_CONFIGURATION custom)" />
+
+    <link name="cover">
+        <visual>
+            <geometry>
+                <mesh filename="package://spot_description/meshes/spot_cover.stl" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.15 0.15 0.15 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <mesh filename="package://spot_description/meshes/spot_cover.stl" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="cover to body_joint" type="fixed">
+        <origin xyz="0.0429 0 0.0597" rpy="0 0 0" />
+        <parent link="body" />
+        <child link="cover" />
+    </joint>
+
+    <!-- OutdoorNav URDF Config -->
+    <xacro:if value="$(arg outdoornav_enabled)">
+      <xacro:include filename="$(find cpr_onav_description)/urdf/outdoornav_description.urdf.xacro" />
+      <xacro:outdoornav_sensors outdoornav_configuration="$(arg outdoornav_configuration)" />
+    </xacro:if>
 
     <!-- Optional custom includes. -->
     <xacro:include filename="$(optenv SPOT_URDF_EXTRAS empty.urdf)" />
