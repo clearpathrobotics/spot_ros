@@ -46,3 +46,6 @@ claim:
 
 # If true, requests depth images mapped in the vision frame for cameras on the Spot robot
 depth_in_visual: True
+
+# allow spot to stand/sit using the ROS controller
+joy_control_enabled: True

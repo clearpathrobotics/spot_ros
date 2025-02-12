@@ -78,7 +78,8 @@ from spot_msgs.srv import SetVelocity, SetVelocityResponse
 from spot_msgs.srv import SpotCheckRequest, SpotCheckResponse, SpotCheck
 from spot_wrapper.wrapper import SpotWrapper
 from std_msgs.msg import Bool
-from std_srvs.srv import Trigger, TriggerResponse, SetBool, SetBoolResponse
+from std_srvs.srv import Trigger, TriggerRequest, TriggerResponse, SetBool, SetBoolResponse
+from sensor_msgs.msg import Joy
 
 from spot_driver.ros_helpers import *
 
@@ -135,6 +136,10 @@ class SpotROS:
     def __init__(self):
         self.spot_wrapper = None
         self.last_tf_msg = TFMessage()
+
+        self.power_state_msg = None
+        self.posture_state_sit = True
+        self.prev_button_value = 0
 
         self.callbacks = {}
         self.spot_wrapper = None
@@ -225,8 +230,8 @@ class SpotROS:
             self.battery_pub.publish(battery_states_array_msg)
 
             # Power State #
-            power_state_msg = GetPowerStatesFromState(state, self.spot_wrapper)
-            self.power_pub.publish(power_state_msg)
+            self.power_state_msg = GetPowerStatesFromState(state, self.spot_wrapper)
+            self.power_pub.publish(self.power_state_msg)
 
             # System Faults #
             system_fault_state_msg = GetSystemFaultsFromState(state, self.spot_wrapper)
@@ -1138,6 +1143,38 @@ class SpotROS:
             precise_position=precise,
         )
 
+    def joy_callback(self, msg):
+
+        if self.power_state_msg is None:
+            return
+
+        motor_power_state = self.power_state_msg.motor_power_state
+        curr_button_value = msg.buttons[self.stand_sit_button]
+        
+        if curr_button_value == 1:
+            if self.prev_button_value == 0:
+                # do something
+                if motor_power_state == PowerState.STATE_UNKNOWN or \
+                   motor_power_state == PowerState.STATE_ERROR:
+                    return
+                if motor_power_state == PowerState.STATE_OFF:
+                    # power on motors
+                    # rospy.loginfo("Spot motors not powered. Please power_on motors before attempting to stand")
+                    self.handle_power_on(TriggerRequest())
+
+                if self.posture_state_sit: # stand
+                    self.handle_stand(TriggerRequest())
+                    rospy.loginfo("Standing")
+                    self.posture_state_sit = False
+                else: # sit
+                    self.handle_sit(TriggerRequest())
+                    rospy.loginfo("Sitting")
+                    rospy.sleep(2.0)
+                    self.handle_safe_power_off(TriggerRequest())
+                    self.posture_state_sit = True
+
+        self.prev_button_value = msg.buttons[self.stand_sit_button]
+
     def cmd_vel_callback(self, data):
         """Callback for cmd_vel command"""
         if not self.robot_allowed_to_move():
@@ -1879,6 +1916,7 @@ class SpotROS:
             self.in_motion_or_idle_pose_cb,
             queue_size=1,
         )
+        rospy.Subscriber("/bluetooth_teleop/joy", Joy, self.joy_callback, queue_size=1)
 
     def initialize_services(self):
         rospy.Service("claim", Trigger, self.handle_claim)
@@ -2028,6 +2066,8 @@ class SpotROS:
         self.use_take_lease = rospy.get_param("~use_take_lease", False)
         self.get_lease_on_action = rospy.get_param("~get_lease_on_action", False)
         self.depth_in_visual = rospy.get_param("~depth_in_visual", False)
+        self.joy_control_enabled = rospy.get_param("~joy_control_enabled", False)
+        self.stand_sit_button = rospy.get_param("~stand_sit_button", 3)
         self.is_charging = False
 
         self.initialize_tf2()
